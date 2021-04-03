@@ -1,4 +1,7 @@
 # CommandLineFPS
+This is forked from OneLoneCoder 
+
+
 A First Person Shooter at the command line? Yup...
 
 Please see the source file on how to configure your command line before running.
