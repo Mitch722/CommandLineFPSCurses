@@ -87,7 +87,7 @@ float fPlayerY = 5.09f;
 float fPlayerA = 0.0f;			// Player Start Rotation
 float fFOV = 3.14159f / 4.0f;	// Field of View
 float fDepth = 16.0f;			// Maximum rendering distance
-float fSpeed = 2.0f;			// Walking Speed
+float fSpeed = 200.0f;			// Walking Speed
 
 
 // render screen using curses
@@ -140,7 +140,7 @@ int main()
 	map += L"#.......########";
 	map += L"#..............#";
 	map += L"#......##......#";
-	map += L"#......##......#";
+	map += L"#......#.......#";
 	map += L"#..............#";
 	map += L"###............#";
 	map += L"##.............#";
@@ -283,7 +283,7 @@ int main()
 				}
 			}
 		}
-		
+
 		// // Display Stats
 		// swprintf_s(screenVec, 40, L"X=%3.2f, Y=%3.2f, A=%3.2f FPS=%3.2f ", fPlayerX, fPlayerY, fPlayerA, 1.0f/fElapsedTime);
 		
@@ -307,6 +307,9 @@ int main()
 		refresh();
 
 		// add player inputs
+		// turn off getch() delay
+		nodelay(stdscr, TRUE);
+		// get key if no button pressed then ERR is output of getch()
 		int playerInput = getch();
 
 		// Handle CCW Rotation ascii a(97)
