@@ -6,11 +6,10 @@ https://github.com/OneLoneCoder/CommandLineFPS/blob/master/CommandLineFPS.cpp
 Build using cmake:
 
 ```
-cd ..
 mkdir build/
 
 cd build/
-cmake ../fpsConsole/
+cmake --DCMAKE_BUILD_TYPE=Release ..
 
 cmake --build .
 

@@ -135,38 +135,38 @@ int main()
 
 	// Create Map of world space # = wall block, . = space
 	wstring map;
-	// map += L"#########.......";
-	// map += L"#...............";
-	// map += L"#.......########";
+	map += L"#########.......";
+	map += L"#...............";
+	map += L"#.......########";
+	map += L"#..............#";
+	map += L"#......##......#";
+	map += L"#......##......#";
+	map += L"#..............#";
+	map += L"###............#";
+	map += L"##.............#";
+	map += L"#......####..###";
+	map += L"#......#.......#";
+	map += L"#......#.......#";
+	map += L"#..............#";
+	map += L"#......#########";
+	map += L"#..............#";
+	map += L"################";
+	// map += L"################";
+	// map += L"#..............#";
+	// map += L"#..............#";
 	// map += L"#..............#";
 	// map += L"#......##......#";
 	// map += L"#......##......#";
 	// map += L"#..............#";
-	// map += L"###............#";
-	// map += L"##.............#";
-	// map += L"#......####..###";
-	// map += L"#......#.......#";
-	// map += L"#......#.......#";
 	// map += L"#..............#";
-	// map += L"#......#########";
+	// map += L"#..............#";
+	// map += L"#......####....#";
+	// map += L"#..............#";
+	// map += L"#..............#";
+	// map += L"#..............#";
+	// map += L"#..............#";
 	// map += L"#..............#";
 	// map += L"################";
-	map += L"################";
-	map += L"#..............#";
-	map += L"#..............#";
-	map += L"#..............#";
-	map += L"#......##......#";
-	map += L"#......##......#";
-	map += L"#..............#";
-	map += L"#..............#";
-	map += L"#..............#";
-	map += L"#......####....#";
-	map += L"#..............#";
-	map += L"#..............#";
-	map += L"#..............#";
-	map += L"#..............#";
-	map += L"#..............#";
-	map += L"################";
 
 	auto tp1 = chrono::system_clock::now();
 	auto tp2 = chrono::system_clock::now();
@@ -255,11 +255,11 @@ int main()
 
 			// Shader walls based on distance
 			short nShade = ' ';
-			if (fDistanceToWall <= fDepth / 4.0f)			nShade = 0x2588;	// Very close	
-			else if (fDistanceToWall < fDepth / 3.0f)		nShade = 0x2593;
-			else if (fDistanceToWall < fDepth / 2.0f)		nShade = 0x2592;
-			else if (fDistanceToWall < fDepth)				nShade = 0x2591;
-			else											nShade = ' ';		// Too far away
+			if (fDistanceToWall <= fDepth / 4.0f)			nShade = '#';	// Very close	
+			else if (fDistanceToWall < fDepth / 3.0f)		nShade = '+';
+			else if (fDistanceToWall < fDepth / 2.0f)		nShade = '*';
+			else if (fDistanceToWall < fDepth)				nShade = '.';
+			else											nShade = ' ';	// Too far away
 
 			if (bBoundary)		nShade = ' '; // Black it out
 			
@@ -274,22 +274,16 @@ int main()
 				{				
 					// Shade floor based on distance
 					float b = 1.0f - (((float)y -nScreenHeight/2.0f) / ((float)nScreenHeight / 2.0f));
-					if (b < 0.25)		nShade = '#';
-					else if (b < 0.5)	nShade = 'x';
-					else if (b < 0.75)	nShade = '.';
+					if (b < 0.25)		nShade = 'X';
+					else if (b < 0.5)	nShade = ':';
+					else if (b < 0.75)	nShade = '~';
 					else if (b < 0.9)	nShade = '-';
 					else				nShade = ' ';
 					screenVec[y*nScreenWidth + x] = nShade;
 				}
 			}
 		}
-
-		// getch();
-		// wstring ws(screenVec);
-
-		// string screenAsString(ws.begin(), ws.end());
-		// std::cout << screenAsString << std::endl;
-
+		
 		// // Display Stats
 		// swprintf_s(screenVec, 40, L"X=%3.2f, Y=%3.2f, A=%3.2f FPS=%3.2f ", fPlayerX, fPlayerY, fPlayerA, 1.0f/fElapsedTime);
 		

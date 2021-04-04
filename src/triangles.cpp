@@ -40,18 +40,12 @@ int main(void)
         index = std::rand() % 3;
         yi = (yi + y[index]) / 2;
         xi = (xi + x[index]) / 2;
-        mvaddch(yi, xi, '*');
+        mvaddstr(yi, xi, "v");
         refresh();
     }
     /* done */
     mvaddstr(maxlines, 0, "Press any key to quit");
     refresh();
-    int characterNo = getch();
-
-    mvaddch(maxlines, 0, characterNo);
-    refresh();
-    std::cout << characterNo << std::endl;
-
     getch();
 
     endwin();
