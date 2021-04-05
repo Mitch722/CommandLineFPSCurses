@@ -6,8 +6,16 @@ project(fpsConsole VERSION 0.1)
 # add compiler options
 add_compile_options(-std=c++11)
 
+
+# # set curses to enable wide characters
+# set(CURSES_NEED_NCURSES "TRUE")
+# set(CURSES_NEED_WIDE "TRUE")
 # find Curses package
 find_package(Curses REQUIRED)
+
+# if (NOT CURSES_FOUND)
+#     add_definitions("-DNOCURSES")
+# endif()
 
 # directories for include directories
 include_directories(${CURSES_INCLUDE_DIRS})

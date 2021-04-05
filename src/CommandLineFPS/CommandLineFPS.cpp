@@ -77,6 +77,7 @@ using namespace std;
 // #include <Windows.h>
 #include<curses.h>
 
+int simCounter = 0;             // simuatlion counter
 int nScreenWidth = 120;			// Console Screen Size X (columns)
 int nScreenHeight = 40;			// Console Screen Size Y (rows)
 int nMapWidth = 16;				// World Dimensions
@@ -130,6 +131,9 @@ int main()
     /* get terminal size from curses */
     int maxlines = LINES - 1;
     int maxcols = COLS - 1;
+
+	nScreenHeight = maxlines;
+	nScreenWidth = maxcols;
 
 	wchar_t *screenVec = new wchar_t[nScreenWidth*nScreenHeight];
 
@@ -298,8 +302,7 @@ int main()
 
 		// Display Frame
 		screenVec[nScreenWidth * nScreenHeight - 1] = '\0';
-		renderConsole(screenVec, nScreenHeight, nScreenWidth);
-		
+				
 		// add frame rate
 		string frameRate = to_string(1.0f/fElapsedTime);
 		char* frameRate_ptr = &frameRate[0];
@@ -346,8 +349,39 @@ int main()
 			}
 		}
 
+		// strafe left movement & collison ascii e(101)
+		if (playerInput == 101) 
+		{
+			fPlayerX += cosf(fPlayerA) * fSpeed * fElapsedTime;;
+			fPlayerY -= sinf(fPlayerA) * fSpeed * fElapsedTime;;
+			if (map.c_str()[(int)fPlayerX * nMapWidth + (int)fPlayerY] == '#')
+			{
+				fPlayerX -= cosf(fPlayerA) * fSpeed * fElapsedTime;;
+				fPlayerY += sinf(fPlayerA) * fSpeed * fElapsedTime;;
+			}
+		}
 
-		// WriteConsoleOutputCharacter(hConsole, screenVec, nScreenWidth * nScreenHeight, { 0,0 }, &dwBytesWritten);
+		// stafe right movement & collision ascii q(113)
+		if (playerInput == 113) 
+		{
+			fPlayerX -= cosf(fPlayerA) * fSpeed * fElapsedTime;;
+			fPlayerY += sinf(fPlayerA) * fSpeed * fElapsedTime;;
+			if (map.c_str()[(int)fPlayerX * nMapWidth + (int)fPlayerY] == '#')
+			{
+				fPlayerX += cosf(fPlayerA) * fSpeed * fElapsedTime;;
+				fPlayerY -= sinf(fPlayerA) * fSpeed * fElapsedTime;;
+			}
+		}
+
+		// render the console after two loops
+		if (simCounter % 2 == 0) 
+		{
+			renderConsole(screenVec, nScreenHeight, nScreenWidth);
+		}		
+
+		// iterate counter
+		simCounter++;
+
 	}
 
 	return 0;
