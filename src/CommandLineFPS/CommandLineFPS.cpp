@@ -42,7 +42,7 @@
 	by running the program, and right clicking on the console title bar, and specifying 
 	the properties. You can also choose to default to them in the future.
 	
-	Controls: A = Turn Left, D = Turn Right, W = Walk Forwards, S = Walk Backwards
+	Controls: A = Turn Left, D = Turn Right, W = Walk Forwards, S = Walk Backwards, Q = Walk Left, E = Walk Right
 
 	Future Modifications
 	~~~~~~~~~~~~~~~~~~~~
@@ -373,12 +373,9 @@ int main()
 			}
 		}
 
-		// render the console after two loops
-		if (simCounter % 2 == 0) 
-		{
-			renderConsole(screenVec, nScreenHeight, nScreenWidth);
-		}		
-
+		// render the console
+		renderConsole(screenVec, nScreenHeight, nScreenWidth);
+		
 		// iterate counter
 		simCounter++;
 
