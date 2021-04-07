@@ -71,11 +71,12 @@
 #include <algorithm>
 #include <cmath>
 #include <chrono>
+
 using namespace std;
 
 #include <stdio.h>
-// #include <Windows.h>
 #include<curses.h>
+#include "EventHandler.h"
 
 int simCounter = 0;             // simuatlion counter
 int nScreenWidth = 120;			// Console Screen Size X (columns)
@@ -88,7 +89,7 @@ float fPlayerY = 5.09f;
 float fPlayerA = 0.0f;			// Player Start Rotation
 float fFOV = 3.14159f / 4.0f;	// Field of View
 float fDepth = 16.0f;			// Maximum rendering distance
-float fSpeed = 200.0f;			// Walking Speed
+float fSpeed = 2.0f;			// Walking Speed
 
 
 // render screen using curses
@@ -115,11 +116,6 @@ void renderConsole(wchar_t* screen, const int screenRows, const int screenCols) 
 }
 
 
-void toScreen(char*& screen, const int index, const string& text) {
-  for (int i = 0; i < text.size(); i++)
-    screen[index + i] = text.at(i);
-};
-
 int main()
 {	
 
@@ -128,14 +124,20 @@ int main()
     cbreak();
     noecho();
     clear();
+
     /* get terminal size from curses */
     int maxlines = LINES - 1;
     int maxcols = COLS - 1;
 
 	nScreenHeight = maxlines;
 	nScreenWidth = maxcols;
-
+	// initialise container for screen
 	wchar_t *screenVec = new wchar_t[nScreenWidth*nScreenHeight];
+
+	// SDL event handler
+	EventHandler eventHandler_;
+	// keysPressed
+	keysPressed keysPressed_ = eventHandler_.getKeysPressed();
 
 	// Create Map of world space # = wall block, . = space
 	wstring map;
@@ -155,22 +157,7 @@ int main()
 	map += L"#......#########";
 	map += L"#..............#";
 	map += L"################";
-	// map += L"################";
-	// map += L"#..............#";
-	// map += L"#..............#";
-	// map += L"#..............#";
-	// map += L"#......##......#";
-	// map += L"#......##......#";
-	// map += L"#..............#";
-	// map += L"#..............#";
-	// map += L"#..............#";
-	// map += L"#......####....#";
-	// map += L"#..............#";
-	// map += L"#..............#";
-	// map += L"#..............#";
-	// map += L"#..............#";
-	// map += L"#..............#";
-	// map += L"################";
+	
 
 	auto tp1 = chrono::system_clock::now();
 	auto tp2 = chrono::system_clock::now();
@@ -308,25 +295,24 @@ int main()
 		char* frameRate_ptr = &frameRate[0];
 		mvaddstr(0., 0., frameRate_ptr);
 		refresh();
-
-		// add player inputs
-		// turn off getch() delay
-		nodelay(stdscr, TRUE);
-		// get key if no button pressed then ERR is output of getch()
-		int playerInput = getch();
+		
+		// use event handler to poll for events
+		eventHandler_.pollEvent();
+		// update the keys pressed
+		keysPressed_ = eventHandler_.getKeysPressed();
 
 		// Handle CCW Rotation ascii a(97)
-		if (playerInput == 97) {
+		if (keysPressed_.a) {
 			fPlayerA -= (fSpeed * 0.5f) * fElapsedTime;
 		}
 
 		// Handle CCW Rotation ascii d(100)
-		if (playerInput == 100) {
+		if (keysPressed_.d) {
 			fPlayerA += (fSpeed * 0.5f) * fElapsedTime;
 		}
 		
 		// Handle Forwards movement & collision ascii w(119)
-		if (playerInput == 119)
+		if (keysPressed_.w)
 		{
 			fPlayerX += sinf(fPlayerA) * fSpeed * fElapsedTime;;
 			fPlayerY += cosf(fPlayerA) * fSpeed * fElapsedTime;;
@@ -338,7 +324,7 @@ int main()
 		}
 
 		// Handle backwards movement & collision ascii s(115)
-		if (playerInput == 115)
+		if (keysPressed_.s)
 		{
 			fPlayerX -= sinf(fPlayerA) * fSpeed * fElapsedTime;;
 			fPlayerY -= cosf(fPlayerA) * fSpeed * fElapsedTime;;
@@ -350,7 +336,7 @@ int main()
 		}
 
 		// strafe left movement & collison ascii e(101)
-		if (playerInput == 101) 
+		if (keysPressed_.e) 
 		{
 			fPlayerX += cosf(fPlayerA) * fSpeed * fElapsedTime;;
 			fPlayerY -= sinf(fPlayerA) * fSpeed * fElapsedTime;;
@@ -362,7 +348,7 @@ int main()
 		}
 
 		// stafe right movement & collision ascii q(113)
-		if (playerInput == 113) 
+		if (keysPressed_.q) 
 		{
 			fPlayerX -= cosf(fPlayerA) * fSpeed * fElapsedTime;;
 			fPlayerY += sinf(fPlayerA) * fSpeed * fElapsedTime;;
@@ -371,6 +357,17 @@ int main()
 				fPlayerX += cosf(fPlayerA) * fSpeed * fElapsedTime;;
 				fPlayerY -= sinf(fPlayerA) * fSpeed * fElapsedTime;;
 			}
+		}
+		// if c is pressed kill all windows c(99)
+		if (keysPressed_.quit) {
+
+			// free screenVec
+			delete [] screenVec;
+			// call/end SDL related things
+			eventHandler_.endProcess();
+
+			endwin();
+			exit(0);
 		}
 
 		// render the console
